@@ -1,25 +1,47 @@
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+import tkinter as tk
+import random
 
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <title>model-viewer</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  </head>
-  <body>
-    <style>
-      model-viewer {
-      width: 100%;
-      height: 100vh;
-      background-color: #faebd7;} /* 16進数で背景の色を指定 */
-    </style>
-      <model-viewer 
-      camera-controls camera-orbit="120deg 50deg 10m" 
-      src="2risako3.gltf" /* 3Dファイルを指定 */
-      poster="assets/loding.gif"
-      alt="non"
-      shadow-intensity="1"
-      auto-rotate>
-    </model-viewer>
-  </body>
-</html>
+root = tk.Tk()
+root.title(' おみくじアプリ ')
+root.geometry('400x600')
+
+omikuji_list = [' 大吉 ',' 大吉 ','吉','吉','吉','吉','吉','吉','凶','凶']
+
+def func_1():
+    omikuji = random.randint(0, 9)
+    label_1.config(text=omikuji_list[omikuji])
+    canvas_1.delete('all')
+
+    if omikuji_list[omikuji] == ' 大吉 ':
+        img_2 = tk.PhotoImage(file='img/omikuji_daikichi.png')
+    elif omikuji_list[omikuji] == '吉':
+        img_2 = tk.PhotoImage(file='img/omikuji_kichi.png')
+    else:
+        img_2 = tk.PhotoImage(file='img/omikuji_kyou.png')
+    
+    #img_2 = img_2.subsample(1)
+    canvas_1.create_image(200, 200, image=img_2)
+    canvas_1.image = img_2
+
+def func_2(count=0, dir=1):
+    if count < 10:
+        canvas_1.move(img_id, 0, 10 * dir)
+        root.after(150, func_2, count + 1, -dir)
+    else:
+        func_1()
+
+canvas_1 = tk.Canvas(root, width=400, height=400)
+canvas_1.pack()
+
+label_1 = tk.Label(root, text=' おみくじ ',font=20)
+label_1.pack(pady=20)
+
+title_image_path = 'img/syougatsu2_omijikuji2.png'
+img_1 = tk.PhotoImage(file=title_image_path)
+img_1 = img_1.subsample(2)
+img_id = canvas_1.create_image(200, 200, image=img_1)
+
+button_1 = tk.Button(root, text=' おみくじを引く ',command=func_2,font=14)
+button_1.pack(pady=20)
+
+root.mainloop()
